@@ -145,10 +145,13 @@ const handleConfirmComment = async (authorName) => {
 <style scoped>
 .background-canvas {
   width: 100%;
-  max-width: 420px;
+  min-height: 100vh;
+  flex: 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  padding: 0 10px;
+  align-items: center;
+  padding: 40px 24px 84px;
   margin: 0 auto;
 }
 
@@ -195,7 +198,7 @@ const handleConfirmComment = async (authorName) => {
 
 @media (max-width: 480px) {
   .background-canvas {
-    padding: 0;
+    padding: 30px 20px 84px;
   }
   .neumorphic-card {
     padding: 6px 0;
