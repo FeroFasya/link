@@ -68,8 +68,23 @@
 
     <!-- Crescent Moon Thumbnail (70% Text, 30% Thumbnail) -->
     <template v-if="variant === 'crescent'">
-      <div class="crescent-thumb" title="Thumbnail Placeholder">
-        <svg class="thumb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <div class="crescent-thumb" title="Thumbnail">
+        <img
+          v-if="thumbImg"
+          :src="thumbImg"
+          alt="Thumbnail"
+          class="crescent-thumb-img"
+        />
+        <svg
+          v-else
+          class="thumb-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <rect x="3" y="3" width="18" height="18" rx="3" ry="3" />
           <circle cx="8.5" cy="8.5" r="1.5" />
           <polyline points="21 15 16 10 5 21" />
@@ -95,6 +110,10 @@ const props = defineProps({
     default: null
   },
   href: {
+    type: String,
+    default: null
+  },
+  thumbImg: {
     type: String,
     default: null
   },
@@ -301,6 +320,17 @@ const handleMouseUp = () => {
   z-index: 1;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+}
+
+.crescent-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.neu-link-btn:hover .crescent-thumb-img {
+  transform: scale(1.08);
 }
 
 .crescent-thumb .thumb-icon {

@@ -32,6 +32,7 @@
           title="project aika"
           to="/project/aika"
           variant="crescent"
+          thumb-img="/aika/cover.png"
         />
 
         <!-- 5. KIRA AI Trainer (Crescent Thumbnail) -->
@@ -39,6 +40,7 @@
           title="kira ai trainer"
           to="/project/kira"
           variant="crescent"
+          thumb-img="/kira-ai-trainer/cover.png"
         />
       </section>
 

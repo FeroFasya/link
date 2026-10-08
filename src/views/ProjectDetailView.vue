@@ -63,6 +63,8 @@
 
       <!-- Media Gallery Showcase -->
       <MediaGallery
+        :video-src="projectData.videoSrc"
+        :video-list="projectData.videoList"
         :video-label="projectData.videoLabel"
         :video-title="projectData.videoTitle"
         :images="projectData.images"
@@ -94,11 +96,12 @@ const PROJECTS = {
     ctaUrl: 'https://mbg-aika.vercel.app/',
     switchTarget: '/project/kira',
     switchLabel: 'kira trainer',
+    videoSrc: '/aika/aika.mp4',
     videoLabel: 'Video Preview: 3D VRM & Lip Sync Demo',
-    videoTitle: 'Video Demo Placeholder',
+    videoTitle: 'Video Demo AIKA',
     images: [
-      { title: 'Screenshot UI Companion', label: 'UI Companion & Chat Window' },
-      { title: 'Screenshot Realtime Blendshapes', label: 'Realtime Blendshapes & Emotion' }
+      { src: '/aika/1.png', title: 'UI Companion & Chat Window', label: 'UI Companion & Chat Window' },
+      { src: '/aika/2.png', title: 'Realtime Blendshapes & Emotion', label: 'Realtime Blendshapes & Emotion' }
     ]
   },
   kira: {
@@ -112,11 +115,16 @@ const PROJECTS = {
     ctaUrl: 'https://kira-ai-trainer.vercel.app/',
     switchTarget: '/project/aika',
     switchLabel: 'aika companion',
+    videoSrc: '/kira-ai-trainer/kira1.mp4',
+    videoList: [
+      { src: '/kira-ai-trainer/kira1.mp4', label: 'Demo 1 ⚡' },
+      { src: '/kira-ai-trainer/kira2.mp4', label: 'Demo 2 🎮' }
+    ],
     videoLabel: 'Video Gameplay: Visual Novel & Sesi Workout KIRA',
-    videoTitle: 'Video Gameplay Placeholder',
+    videoTitle: 'Video Gameplay KIRA',
     images: [
-      { title: 'Screenshot Scene Dialog', label: 'Scene Percakapan & Motivasi KIRA' },
-      { title: 'Screenshot UI Tracker', label: 'Tracker Target Olahraga Harian' }
+      { src: '/kira-ai-trainer/1.png', title: 'Scene Percakapan & Motivasi KIRA', label: 'Scene Percakapan & Motivasi KIRA' },
+      { src: '/kira-ai-trainer/cover.png', title: 'Cover Ilustrasi KIRA AI Trainer', label: 'Cover Ilustrasi KIRA' }
     ]
   }
 }
