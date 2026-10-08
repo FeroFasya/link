@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIRA AI Trainer - Visual Novel Fitness AI | Fero Fasya</title>
+
+  <!-- Google Fonts: Pixelify Sans, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Pixelify+Sans:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="project-detail.css">
+</head>
+
+<body>
+  <div class="bg-ambient"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="detail-nav">
+    <a href="index.html" class="btn-nav-pill back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>linktree</span>
+    </a>
+
+    <a href="aika.html" class="btn-nav-pill switch">
+      <span>aika companion</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+  </nav>
+
+  <!-- Main Project Detail Card -->
+  <main class="project-card">
+    <header class="project-header">
+      <div class="project-category-badge badge-gold">
+        <span class="badge-dot"></span>
+        <span>#juaravibecoding</span>
+      </div>
+      <h1 class="project-title">KIRA AI Trainer</h1>
+      <p class="project-description">
+        KIRA adalah karakter AI yang bertindak sebagai pelatih kebugaran. Disajikan dalam format visual novel, ia memberikan panduan olahraga interaktif dan motivasi harian. Ini adalah project untuk event #juaravibecoding by googledeveloperid.
+      </p>
+    </header>
+
+    <!-- Tech Stack Tags -->
+    <div class="project-tags">
+      <span class="tag-pill">#Visual Novel</span>
+      <span class="tag-pill">#LLM</span>
+      <span class="tag-pill">#FitnessAI</span>
+      <span class="tag-pill">#GoogleDeveloperID</span>
+      <span class="tag-pill">#Gamification</span>
+    </div>
+
+    <!-- CTA Button -->
+    <div class="cta-wrapper">
+      <a href="https://kira-ai-trainer.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-cta" id="btnCtaKira">
+        <span>wanna see?</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Media Gallery Showcase -->
+    <section class="gallery-section">
+      <div class="gallery-header">
+        <span class="gallery-title">Media Showcase</span>
+      </div>
+
+      <!-- Video Placeholder (Autoplay Simulation) -->
+      <div class="media-video-box" title="Video Gameplay Placeholder">
+        <div class="video-badge-autoplay">
+          <span class="dot"></span>
+          <span>AUTOPLAY DEMO</span>
+        </div>
+        <div class="video-pulse-ring">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </div>
+        <span class="video-label">Video Gameplay: Visual Novel & Sesi Workout KIRA</span>
+      </div>
+
+      <!-- Image Grid Placeholder -->
+      <div class="media-img-grid">
+        <div class="media-img-box" title="Screenshot Scene Dialog Placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3" ry="3"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span class="media-img-label">Scene Percakapan & Motivasi KIRA</span>
+        </div>
+
+        <div class="media-img-box" title="Screenshot UI Workout Tracker Placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3" ry="3"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span class="media-img-label">Tracker Target Olahraga Harian</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Tipis -->
+  <footer class="footer">
+    <p class="footer-text">ferooooooooooo :3</p>
+  </footer>
+
+  <script>
+    // Tandai pengunjung sudah berada dalam sesi (agar tidak ada opening loader saat balik ke linktree)
+    sessionStorage.setItem('fero_visited_session', 'true');
+
+    // Smooth Page Exit Transition
+    document.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:')) {
+        link.addEventListener('click', (e) => {
+          if (link.target === '_blank' || e.metaKey || e.ctrlKey) return;
+          e.preventDefault();
+          document.body.classList.add('page-exiting');
+          document.body.classList.add('is-exiting');
+          setTimeout(() => {
+            window.location.href = href;
+          }, 260);
+        });
+      }
+    });
+
+    window.addEventListener('pageshow', (event) => {
+      document.body.classList.remove('page-exiting');
+      document.body.classList.remove('is-exiting');
+    });
+  </script>
+</body>
+
+</html>

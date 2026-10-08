@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesin Waktu Fero ⏳</title>
+
+  <!-- Google Fonts: Pixelify Sans, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Pixelify+Sans:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #1e1f23;
+      --text-primary: #f0f0f2;
+      --text-secondary: #7e828d;
+      --shadow-dark: #131417;
+      --shadow-light: #2a2b31;
+      --neu-flat-md: 8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+      --neu-flat-sm: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+      --neu-pressed-sm: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @keyframes timePageEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes timePageExit {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.98);
+      }
+    }
+
+    header,
+    #mainStage {
+      animation: timePageEnter 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    body.is-exiting header,
+    body.is-exiting #mainStage {
+      animation: timePageExit 0.26s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+      pointer-events: none;
+    }
+
+    /* Ambient Space Dust Background */
+    .space-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0, 0, 0, 0)),
+        radial-gradient(1.5px 1.5px at 150px 180px, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0)),
+        radial-gradient(1px 1px at 280px 90px, rgba(255, 255, 255, 0.4), rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 400px 320px, rgba(255, 255, 255, 0.7), rgba(0, 0, 0, 0)),
+        radial-gradient(1px 1px at 520px 240px, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0));
+      background-repeat: repeat;
+      background-size: 550px 550px;
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header Nav Bar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(30, 31, 35, 0.88);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: var(--neu-flat-sm);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+
+    .btn-back:hover {
+      color: #ffffff;
+      transform: translateX(-3px);
+      box-shadow: var(--neu-flat-md);
+    }
+
+    .btn-back:active {
+      transform: translateY(1px);
+      box-shadow: var(--neu-pressed-sm);
+    }
+
+    .header-center {
+      text-align: center;
+    }
+
+    .header-title {
+      font-family: 'Pixelify Sans', cursive, sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .header-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* View Switcher Controls */
+    .view-switcher {
+      display: inline-flex;
+      background: #191a1d;
+      padding: 4px;
+      border-radius: 999px;
+      box-shadow: inset 2px 2px 6px #101114, inset -2px -2px 6px #292a30;
+      gap: 4px;
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .view-btn:hover {
+      color: #ffffff;
+    }
+
+    .view-btn.active {
+      background: #24262c;
+      color: #ffffff;
+      box-shadow: 2px 2px 6px #121316, -2px -2px 6px #2e3037;
+    }
+
+    /* Main Stage */
+    main {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Message Pill Card Template */
+    .msg-card {
+      background: #212328;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 14px 18px;
+      box-shadow: 6px 6px 16px #121316, -6px -6px 16px #292b32;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: default;
+      user-select: none;
+    }
+
+    .msg-card:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 8px 8px 20px #0f1013, -8px -8px 20px #30333b, 0 0 14px rgba(255, 255, 255, 0.06);
+    }
+
+    .msg-author {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #61b5ff;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .msg-text {
+      font-size: 0.92rem;
+      line-height: 1.45;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .msg-date {
+      font-size: 0.7rem;
+      color: #636773;
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ==========================================================
+       VIEW 1: FLOATING DRIFT (Melayang di Ruang Angkasa)
+       ========================================================== */
+    #driftContainer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .drift-bubble {
+      position: absolute;
+      max-width: 320px;
+      animation: gentleDrift 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes gentleDrift {
+      0% {
+        transform: translateY(0px) rotate(-1deg);
+      }
+
+      50% {
+        transform: translateY(-24px) rotate(1.5deg);
+      }
+
+      100% {
+        transform: translateY(12px) rotate(-0.5deg);
+      }
+    }
+
+    /* ==========================================================
+       VIEW 2: BOUNCING DVD SCREENSAVER (Memantul Layar)
+       ========================================================== */
+    #bounceCanvasContainer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .bounce-item {
+      position: absolute;
+      max-width: 300px;
+      will-change: transform;
+    }
+
+    /* ==========================================================
+       VIEW 3: SPANDUK BERJALAN (TICKER TAPE MARQUEE)
+       ========================================================== */
+    #tickerContainer {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 32px;
+      overflow: hidden;
+      padding: 40px 0;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 24px;
+      width: max-content;
+      animation: marqueeScroll 32s linear infinite;
+    }
+
+    .marquee-track.reverse {
+      animation: marqueeScrollReverse 36s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes marqueeScroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes marqueeScrollReverse {
+      0% {
+        transform: translateX(-50%);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    /* ==========================================================
+       VIEW 4: GRID TIMELINE (Kartu Teratur)
+       ========================================================== */
+    #gridContainer {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      max-width: 320px;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 18px;
+      font-size: 0.8rem;
+      color: #555964;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      z-index: 10;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        justify-content: center;
+      }
+
+      .view-switcher {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .view-btn {
+        padding: 6px 10px;
+        font-size: 0.72rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="space-bg"></div>
+
+  <!-- Header Nav -->
+  <header>
+    <a href="index.html" class="btn-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>balik?</span>
+    </a>
+
+    <div class="header-center">
+      <h1 class="header-title">mesin waktu ⏳</h1>
+      <p class="header-desc">jejak pesan & waktu yang pernah dikirim untuk fero</p>
+    </div>
+
+    <!-- Mode Switcher -->
+    <div class="view-switcher" role="tablist">
+      <button class="view-btn" data-view="bounce">⚽ bounce</button>
+      <button class="view-btn active" data-view="drift">🌌 floating</button>
+      <button class="view-btn" data-view="ticker">📜 ticker</button>
+      <button class="view-btn" data-view="grid">📋 grid</button>
+    </div>
+  </header>
+
+  <!-- Main View Stage -->
+  <main id="mainStage">
+    <!-- View 1: Drift Space -->
+    <div id="driftContainer"></div>
+
+    <!-- View 2: Bouncing Screensaver -->
+    <div id="bounceCanvasContainer"></div>
+
+    <!-- View 3: Spanduk Ticker Tape -->
+    <div id="tickerContainer">
+      <div id="tickerRow1" class="marquee-track"></div>
+      <div id="tickerRow2" class="marquee-track reverse"></div>
+    </div>
+
+    <!-- View 4: Standard Grid -->
+    <div id="gridContainer" style="display: none;"></div>
+
+    <!-- Empty State Prompt -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">⏳</div>
+      <p style="font-weight: 600; margin-bottom: 6px;">Mesin Waktu Masih Sunyi</p>
+      <p style="font-size: 0.82rem;">Belum ada jejak pesan yang dikirim. Coba kembali ke linktree dan kirim pesan
+        pertamamu!</p>
+    </div>
+  </main>
+
+  <footer>
+    <span>mesin waktu fero • ferooooooooooo :3</span>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const STORAGE_KEY = 'fero_time_capsule_comments';
+
+      // Pesan bawaan manis jika localStorage masih kosong
+      const DEFAULT_COMMENTS = [
+        {
+          id: 1,
+          author: 'Aika 🌸',
+          text: 'Halo Fero! Semangat terus buat project-project kerennya yaa! Jangan lupa istirahat!',
+          displayDate: 'Hari ini, 14:20'
+        },
+        {
+          id: 2,
+          author: 'Kira ⚡',
+          text: 'Web karya & visual neumorphism-nya juara banget bro, clean parah!',
+          displayDate: 'Kemarin, 21:05'
+        },
+        {
+          id: 3,
+          author: 'Anonim 🕵️',
+          text: 'Ferooo, titip jejak di mesin waktu ya! Semoga sehat dan sukses selalu :3',
+          displayDate: 'Kemarin, 18:30'
+        },
+        {
+          id: 4,
+          author: 'Pengelana Waktu 🚀',
+          text: 'Pesan ini dikirim dari masa depan: ide-ide kamu bakal kejadian nyata semua!',
+          displayDate: '3 hari lalu'
+        }
+      ];
+
+      // Ambil data
+      let comments = [];
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        if (stored.length > 0) {
+          comments = stored;
+        } else {
+          comments = DEFAULT_COMMENTS;
+        }
+      } catch (e) {
+        comments = DEFAULT_COMMENTS;
+      }
+
+      const emptyState = document.getElementById('emptyState');
+      if (comments.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      // Template Card Generator
+      function createMsgCard(item) {
+        const card = document.createElement('div');
+        card.className = 'msg-card';
+        card.innerHTML = `
+          <div class="msg-author">
+            <span>✨</span>
+            <span>${escapeHTML(item.author || 'Anonim 🕵️')}</span>
+          </div>
+          <div class="msg-text">${escapeHTML(item.text)}</div>
+          <div class="msg-date">${escapeHTML(item.displayDate || 'Waktu terlampir')}</div>
+        `;
+        return card;
+      }
+
+      function escapeHTML(str) {
+        return String(str).replace(/[&<>'"]/g,
+          tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+      }
+
+      // ==========================================================
+      // VIEW CONTROLLER
+      // ==========================================================
+      const driftContainer = document.getElementById('driftContainer');
+      const bounceContainer = document.getElementById('bounceCanvasContainer');
+      const tickerContainer = document.getElementById('tickerContainer');
+      const gridContainer = document.getElementById('gridContainer');
+      const viewButtons = document.querySelectorAll('.view-btn');
+
+      let currentView = 'drift';
+      let bounceAnimationFrameId = null;
+
+      function switchView(viewName) {
+        currentView = viewName;
+        viewButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.view === viewName));
+
+        // Reset containers
+        driftContainer.style.display = 'none';
+        bounceContainer.style.display = 'none';
+        tickerContainer.style.display = 'none';
+        gridContainer.style.display = 'none';
+
+        if (bounceAnimationFrameId) {
+          cancelAnimationFrame(bounceAnimationFrameId);
+          bounceAnimationFrameId = null;
+        }
+
+        if (viewName === 'drift') {
+          renderDriftView();
+        } else if (viewName === 'bounce') {
+          renderBounceView();
+        } else if (viewName === 'ticker') {
+          renderTickerView();
+        } else if (viewName === 'grid') {
+          renderGridView();
+        }
+      }
+
+      viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => switchView(btn.dataset.view));
+      });
+
+      // ==========================================================
+      // 1. DRIFT VIEW (Melayang Angkasa)
+      // ==========================================================
+      function renderDriftView() {
+        driftContainer.innerHTML = '';
+        driftContainer.style.display = 'block';
+
+        const stageW = driftContainer.clientWidth || window.innerWidth;
+        const stageH = driftContainer.clientHeight || (window.innerHeight - 120);
+
+        comments.forEach((c, i) => {
+          const card = createMsgCard(c);
+          card.classList.add('drift-bubble');
+
+          // Hitung posisi acak terdistribusi
+          const x = 20 + Math.random() * Math.max(stageW - 340, 40);
+          const y = 30 + (i * ((stageH - 140) / comments.length)) + (Math.random() * 30);
+
+          card.style.left = `${x}px`;
+          card.style.top = `${y}px`;
+          card.style.animationDelay = `${(i * 1.5) % 6}s`;
+          card.style.animationDuration = `${16 + (i * 3)}s`;
+
+          driftContainer.appendChild(card);
+        });
+      }
+
+      // ==========================================================
+      // 2. BOUNCING SCREENSAVER VIEW (Memantul Dinding Layar)
+      // ==========================================================
+      function renderBounceView() {
+        bounceContainer.innerHTML = '';
+        bounceContainer.style.display = 'block';
+
+        const stageW = bounceContainer.clientWidth || window.innerWidth;
+        const stageH = bounceContainer.clientHeight || (window.innerHeight - 120);
+
+        const balls = [];
+
+        comments.slice(0, 10).forEach((c, i) => {
+          const el = createMsgCard(c);
+          el.classList.add('bounce-item');
+          bounceContainer.appendChild(el);
+
+          const w = el.offsetWidth || 260;
+          const h = el.offsetHeight || 110;
+
+          // Velocity
+          const speed = 1.2 + Math.random() * 0.8;
+          const angle = Math.random() * Math.PI * 2;
+
+          balls.push({
+            el: el,
+            x: 20 + Math.random() * Math.max(stageW - w - 40, 20),
+            y: 20 + Math.random() * Math.max(stageH - h - 40, 20),
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            w: w,
+            h: h
+          });
+        });
+
+        function animateBounce() {
+          const curW = bounceContainer.clientWidth || window.innerWidth;
+          const curH = bounceContainer.clientHeight || (window.innerHeight - 120);
+
+          balls.forEach(b => {
+            b.x += b.vx;
+            b.y += b.vy;
+
+            // Pantulan horizontal
+            if (b.x <= 8) {
+              b.x = 8;
+              b.vx = Math.abs(b.vx);
+            } else if (b.x + b.w >= curW - 8) {
+              b.x = curW - b.w - 8;
+              b.vx = -Math.abs(b.vx);
+            }
+
+            // Pantulan vertikal
+            if (b.y <= 8) {
+              b.y = 8;
+              b.vy = Math.abs(b.vy);
+            } else if (b.y + b.h >= curH - 8) {
+              b.y = curH - b.h - 8;
+              b.vy = -Math.abs(b.vy);
+            }
+
+            b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+          });
+
+          bounceAnimationFrameId = requestAnimationFrame(animateBounce);
+        }
+
+        bounceAnimationFrameId = requestAnimationFrame(animateBounce);
+      }
+
+      // ==========================================================
+      // 3. TICKER TAPE / MARQUEE SPANDUK
+      // ==========================================================
+      function renderTickerView() {
+        const row1 = document.getElementById('tickerRow1');
+        const row2 = document.getElementById('tickerRow2');
+        row1.innerHTML = '';
+        row2.innerHTML = '';
+        tickerContainer.style.display = 'flex';
+
+        // Duplikasi agar looping marquee mulus tanpa jeda
+        const itemsList = comments.concat(comments);
+
+        itemsList.forEach((c, idx) => {
+          const card1 = createMsgCard(c);
+          const card2 = createMsgCard(c);
+          if (idx % 2 === 0) {
+            row1.appendChild(card1);
+          } else {
+            row2.appendChild(card2);
+          }
+        });
+      }
+
+      // ==========================================================
+      // 4. GRID TIMELINE VIEW
+      // ==========================================================
+      function renderGridView() {
+        gridContainer.innerHTML = '';
+        gridContainer.style.display = 'grid';
+
+        comments.forEach(c => {
+          const card = createMsgCard(c);
+          gridContainer.appendChild(card);
+        });
+      }
+
+      // Inisialisasi awal
+      switchView('drift');
+
+      // Responsif pada resize
+      window.addEventListener('resize', () => {
+        if (currentView === 'drift') renderDriftView();
+      });
+
+      // Tandai pengunjung sudah berada dalam sesi (agar tidak ada opening loader saat balik ke linktree)
+      sessionStorage.setItem('fero_visited_session', 'true');
+
+      // Smooth Page Exit Transition
+      document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:')) {
+          link.addEventListener('click', (e) => {
+            if (link.target === '_blank' || e.metaKey || e.ctrlKey) return;
+            e.preventDefault();
+            document.body.classList.add('page-exiting');
+            document.body.classList.add('is-exiting');
+            setTimeout(() => {
+              window.location.href = href;
+            }, 260);
+          });
+        }
+      });
+
+      window.addEventListener('pageshow', (event) => {
+        document.body.classList.remove('page-exiting');
+        document.body.classList.remove('is-exiting');
+      });
+    });
+  </script>
+</body>
+
+</html>

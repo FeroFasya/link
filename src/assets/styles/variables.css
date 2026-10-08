@@ -1,0 +1,25 @@
+:root {
+  /* DARK NEUMORPHISM (Deep Sleek Charcoal) */
+  --bg-color: #1e1f23;
+  --surface-color: #212328;
+  --surface-hover: #272930;
+  
+  --text-primary: #f0f0f2;
+  --text-secondary: #7e828d;
+  --text-muted: #555964;
+  --text-hover: #ffffff;
+
+  /* Bayangan Dark Neumorphic */
+  --shadow-dark: #121316;
+  --shadow-light: #2b2e35;
+
+  /* Outer Shadows (Timbul / Extruded) */
+  --neu-flat-card: 14px 14px 32px var(--shadow-dark), -14px -14px 32px var(--shadow-light);
+  --neu-flat-md: 7px 7px 16px var(--shadow-dark), -7px -7px 16px var(--shadow-light);
+  --neu-flat-sm: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+  --neu-hover-md: 9px 9px 18px var(--shadow-dark), -9px -9px 18px var(--shadow-light);
+
+  /* Inner Shadows (Cekung / Inset / Pressed) */
+  --neu-pressed-md: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  --neu-pressed-sm: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+}
