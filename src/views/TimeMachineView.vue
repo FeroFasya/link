@@ -311,10 +311,11 @@ onMounted(async () => {
   setupDrift()
   window.addEventListener('resize', onResize)
 
-  // Realtime subscription if available
-  unsubscribe = timeCapsuleService.subscribeComments((newComment) => {
-    comments.value.unshift(newComment)
+  // Realtime subscription: otomatis update list tanpa duplikasi!
+  unsubscribe = timeCapsuleService.subscribeComments((syncedList) => {
+    comments.value = syncedList
     if (currentView.value === 'drift') setupDrift()
+    if (currentView.value === 'bounce') setupBounce()
     if (currentView.value === 'ticker') setupTicker()
   })
 })

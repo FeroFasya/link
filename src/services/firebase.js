@@ -160,7 +160,7 @@ export const timeCapsuleService = {
     return newEntry
   },
 
-  // Realtime subscription (Pesan baru langsung muncul tanpa refresh!)
+  // Realtime subscription (Pesan baru langsung tersinkronisasi tanpa duplikasi)
   subscribeComments(callback) {
     if (db) {
       try {
@@ -168,20 +168,21 @@ export const timeCapsuleService = {
         const q = query(commentsRef, orderBy('createdAt', 'desc'), limit(100))
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added') {
-              const data = change.doc.data()
-              // Hanya beri tahu data baru (yang memiliki timestamp server)
-              if (data.createdAt) {
-                callback({
-                  id: change.doc.id,
-                  author: data.author || 'Anonim 🕵️',
-                  text: data.text || '',
-                  displayDate: data.displayDate || 'Baru saja'
-                })
+          if (!snapshot.empty) {
+            const list = snapshot.docs.map(doc => {
+              const data = doc.data()
+              return {
+                id: doc.id,
+                author: data.author || 'Anonim 🕵️',
+                text: data.text || '',
+                displayDate: data.displayDate || 'Waktu terlampir',
+                createdAt: data.createdAt?.toDate?.() || new Date()
               }
-            }
-          })
+            })
+            callback(list)
+          } else {
+            callback(DEFAULT_COMMENTS)
+          }
         }, (error) => {
           console.warn('Firestore subscription error:', error)
         })
