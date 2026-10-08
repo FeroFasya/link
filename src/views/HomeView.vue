@@ -82,7 +82,7 @@
         <!-- Notification Content -->
         <div class="wa-body">
           <div class="wa-avatar-box">
-            <img src="/menhera.gif" alt="avatar" class="wa-avatar-img" />
+            <img src="/opening.gif" alt="avatar" class="wa-avatar-img" />
           </div>
           <div class="wa-content">
             <div class="wa-title-row">

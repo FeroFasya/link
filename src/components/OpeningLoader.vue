@@ -24,7 +24,7 @@ onMounted(() => {
 <template>
   <div v-if="isVisible" :class="['opening-loader', { 'hidden': isFading }]">
     <div class="loader-content">
-      <img src="/opening.gif" alt="loading..." class="loader-gif" />
+      <img src="/loading.gif" alt="loading..." class="loader-gif" />
       <div class="loader-dots">
         <span></span><span></span><span></span>
       </div>
