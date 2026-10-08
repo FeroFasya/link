@@ -84,7 +84,7 @@ import TerminalCommentInput from '@/components/TerminalCommentInput.vue'
 import FloatingTimeMachine from '@/components/FloatingTimeMachine.vue'
 import IdentityModal from '@/components/IdentityModal.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
-import { timeCapsuleService } from '@/services/supabase'
+import { timeCapsuleService } from '@/services/firebase'
 
 const commentInputComp = ref(null)
 const isModalOpen = ref(false)

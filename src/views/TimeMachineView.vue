@@ -162,7 +162,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { timeCapsuleService } from '@/services/supabase'
+import { timeCapsuleService } from '@/services/firebase'
 
 const comments = ref([])
 const currentView = ref('drift') // 'drift' | 'bounce' | 'ticker' | 'grid'
