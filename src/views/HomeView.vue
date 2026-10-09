@@ -10,7 +10,7 @@
         <!-- 1. Tentang Ku (Monochrome Star Watermark) -->
         <NeuLinkButton
           title="tentang ku"
-          href="#"
+          href="https://ferofasya.github.io/Portogamegweh/"
           variant="star"
         />
 
@@ -24,7 +24,7 @@
         <!-- 3. Resume -->
         <NeuLinkButton
           title="resume"
-          href="#"
+          href="https://drive.google.com/file/d/1NA5V3pAuzCzWNVSHswlRzgN2rJeG0ypN/view?usp=sharing"
           variant="default"
         />
 
