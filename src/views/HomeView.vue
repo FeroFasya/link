@@ -7,8 +7,9 @@
       <!-- Links Container -->
       <section class="links-container">
         <!-- 1. Web Karya (Monochrome Star Watermark) -->
+        <!-- 1. Tentang Ku (Monochrome Star Watermark) -->
         <NeuLinkButton
-          title="web karya"
+          title="tentang ku"
           href="#"
           variant="star"
         />
@@ -32,7 +33,7 @@
           title="project aika"
           to="/project/aika"
           variant="crescent"
-          thumb-img="/aika/cover.png"
+          thumb-img="/aika/cover.webp"
         />
 
         <!-- 5. KIRA AI Trainer (Crescent Thumbnail) -->
@@ -40,7 +41,7 @@
           title="kira ai trainer"
           to="/project/kira"
           variant="crescent"
-          thumb-img="/kira-ai-trainer/cover.png"
+          thumb-img="/kira-ai-trainer/cover.webp"
         />
       </section>
 

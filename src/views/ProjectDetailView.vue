@@ -100,8 +100,9 @@ const PROJECTS = {
     videoLabel: 'Video Preview: 3D VRM & Lip Sync Demo',
     videoTitle: 'Video Demo AIKA',
     images: [
-      { src: '/aika/1.png', title: 'UI Companion & Chat Window', label: 'UI Companion & Chat Window' },
-      { src: '/aika/2.png', title: 'Realtime Blendshapes & Emotion', label: 'Realtime Blendshapes & Emotion' }
+      { src: '/aika/cover.webp', title: 'Cover Karakter AIKA', label: 'Cover Avatar 3D VRM' },
+      { src: '/aika/1.webp', title: 'UI Companion & Chat Window', label: 'UI Companion & Chat Window' },
+      { src: '/aika/2.webp', title: 'Realtime Blendshapes & Emotion', label: 'Realtime Blendshapes & Emotion' }
     ]
   },
   kira: {
@@ -123,8 +124,8 @@ const PROJECTS = {
     videoLabel: 'Video Gameplay: Visual Novel & Sesi Workout KIRA',
     videoTitle: 'Video Gameplay KIRA',
     images: [
-      { src: '/kira-ai-trainer/1.png', title: 'Scene Percakapan & Motivasi KIRA', label: 'Scene Percakapan & Motivasi KIRA' },
-      { src: '/kira-ai-trainer/cover.png', title: 'Cover Ilustrasi KIRA AI Trainer', label: 'Cover Ilustrasi KIRA' }
+      { src: '/kira-ai-trainer/1.webp', title: 'Scene Percakapan & Motivasi KIRA', label: 'Scene Percakapan & Motivasi KIRA' },
+      { src: '/kira-ai-trainer/cover.webp', title: 'Cover Ilustrasi KIRA AI Trainer', label: 'Cover Ilustrasi KIRA' }
     ]
   }
 }

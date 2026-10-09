@@ -1,92 +1,106 @@
 <template>
   <section class="gallery-section">
+    <!-- Header with Title & Navigation Controls -->
     <div class="gallery-header">
-      <span class="gallery-title">Media Showcase</span>
-      <!-- Multi-video switcher if available -->
-      <div v-if="videoList && videoList.length > 1" class="video-switcher">
+      <div class="gallery-title-box">
+        <span class="gallery-title">Media Showcase</span>
+        <span class="media-counter">{{ activeIndex + 1 }} / {{ mediaItems.length }}</span>
+      </div>
+
+      <!-- Arrow Controls -->
+      <div class="gallery-nav-btns">
         <button
-          v-for="(vid, idx) in videoList"
-          :key="idx"
           type="button"
-          class="vid-tab-btn"
-          :class="{ active: currentVideoIndex === idx }"
-          @click="currentVideoIndex = idx"
+          class="nav-arrow-btn"
+          aria-label="Sebelumnya"
+          :disabled="activeIndex === 0"
+          @click="scrollPrev"
         >
-          {{ vid.label || `Video ${idx + 1}` }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="nav-arrow-btn"
+          aria-label="Berikutnya"
+          :disabled="activeIndex === mediaItems.length - 1"
+          @click="scrollNext"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
         </button>
       </div>
     </div>
 
-    <!-- Real Video Player Box -->
-    <div v-if="activeVideoSrc" class="media-video-box has-video">
-      <video
-        ref="videoEl"
-        :key="activeVideoSrc"
-        :src="activeVideoSrc"
-        class="media-video-player"
-        autoplay
-        muted
-        loop
-        playsinline
-        controls
-        preload="metadata"
-      ></video>
-      <div class="video-badge-autoplay">
-        <span class="dot"></span>
-        <span>AUTOPLAY</span>
-      </div>
-    </div>
-
-    <!-- Fallback Video Placeholder Box -->
-    <div v-else class="media-video-box" :title="videoTitle">
-      <div class="video-badge-autoplay">
-        <span class="dot"></span>
-        <span>AUTOPLAY DEMO</span>
-      </div>
-      <div class="video-pulse-ring">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <polygon points="5 3 19 12 5 21 5 3"></polygon>
-        </svg>
-      </div>
-      <span class="video-label">{{ videoLabel }}</span>
-    </div>
-
-    <!-- Image Grid Showcase -->
-    <div class="media-img-grid">
+    <!-- Horizontal Scroll Carousel Track (Natural Aspect Ratio, No Cut) -->
+    <div
+      ref="carouselTrack"
+      class="media-carousel-track"
+      @scroll.passive="handleScroll"
+    >
       <div
-        v-for="(img, idx) in images"
+        v-for="(item, idx) in mediaItems"
         :key="idx"
-        class="media-img-box"
-        :class="{ 'has-img': Boolean(img.src) }"
-        :title="img.title"
-        @click="openLightbox(img)"
+        class="media-carousel-item"
+        :class="{ 'is-video-item': item.type === 'video', 'is-image-item': item.type === 'image' }"
+        @click="item.type === 'image' && openLightbox(item)"
       >
-        <!-- Real Image -->
-        <template v-if="img.src">
-          <img
-            :src="img.src"
-            :alt="img.label || img.title"
-            class="media-real-img"
-            loading="lazy"
-          />
-          <div class="media-img-overlay">
-            <span class="media-img-pill">{{ img.label }}</span>
+        <!-- 1. Real Video Player with Reliable Autoplay -->
+        <template v-if="item.type === 'video'">
+          <div class="media-video-wrapper">
+            <video
+              :ref="el => { if (el) videoElements[idx] = el }"
+              :src="item.src"
+              class="media-natural-video"
+              autoplay
+              muted
+              loop
+              playsinline
+              webkit-playsinline
+              controls
+              preload="auto"
+              @loadedmetadata="onVideoLoaded(idx)"
+            ></video>
+            <div class="video-top-badge">
+              <span class="dot"></span>
+              <span>AUTOPLAY</span>
+            </div>
+          </div>
+          <div class="media-item-caption">
+            <span class="media-caption-tag">VIDEO</span>
+            <span class="media-caption-text">{{ item.label }}</span>
           </div>
         </template>
 
-        <!-- Placeholder Fallback -->
-        <template v-else>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="3" ry="3" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <polyline points="21 15 16 10 5 21" />
-          </svg>
-          <span class="media-img-label">{{ img.label }}</span>
+        <!-- 2. Real Image with Natural Aspect Ratio (No Cut) -->
+        <template v-else-if="item.type === 'image'">
+          <div class="media-img-wrapper">
+            <img
+              :src="item.src"
+              :alt="item.label"
+              class="media-natural-img"
+              loading="lazy"
+            />
+            <div class="img-zoom-hint" title="Klik untuk memperbesar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="media-item-caption">
+            <span class="media-caption-tag">IMAGE</span>
+            <span class="media-caption-text">{{ item.label }}</span>
+          </div>
         </template>
       </div>
     </div>
 
-    <!-- Image Lightbox Modal -->
+    <!-- Lightbox Zoom Modal -->
     <Teleport to="body">
       <div
         v-if="lightboxImg"
@@ -106,7 +120,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 
 const props = defineProps({
   videoSrc: {
@@ -119,52 +133,148 @@ const props = defineProps({
   },
   videoLabel: {
     type: String,
-    default: 'Video Preview Demo'
-  },
-  videoTitle: {
-    type: String,
-    default: 'Video Placeholder'
+    default: 'Video Preview'
   },
   images: {
     type: Array,
-    default: () => [
-      { title: 'Screenshot 1', label: 'Preview Interface 1' },
-      { title: 'Screenshot 2', label: 'Preview Interface 2' }
-    ]
+    default: () => []
   }
 })
 
-const currentVideoIndex = ref(0)
+const carouselTrack = ref(null)
+const activeIndex = ref(0)
 const lightboxImg = ref(null)
+const videoElements = ref({})
 
-const activeVideoSrc = computed(() => {
+// Flatten all media (videos and images) into one uniform array
+const mediaItems = computed(() => {
+  const items = []
+
+  // Add multiple videos if videoList provided
   if (props.videoList && props.videoList.length > 0) {
-    return props.videoList[currentVideoIndex.value]?.src || props.videoList[currentVideoIndex.value]
+    props.videoList.forEach((v) => {
+      items.push({
+        type: 'video',
+        src: v.src || v,
+        label: v.label || props.videoLabel
+      })
+    })
+  } else if (props.videoSrc) {
+    items.push({
+      type: 'video',
+      src: props.videoSrc,
+      label: props.videoLabel
+    })
   }
-  return props.videoSrc
+
+  // Add images
+  if (props.images && props.images.length > 0) {
+    props.images.forEach((img) => {
+      items.push({
+        type: 'image',
+        src: img.src,
+        label: img.label || img.title || 'Screenshot'
+      })
+    })
+  }
+
+  return items
 })
 
-const openLightbox = (img) => {
-  if (img.src) {
-    lightboxImg.value = img
+const handleScroll = () => {
+  if (!carouselTrack.value) return
+  const track = carouselTrack.value
+  const children = Array.from(track.children)
+  if (children.length === 0) return
+
+  const trackCenter = track.scrollLeft + track.clientWidth / 2
+  let closestIndex = 0
+  let closestDist = Infinity
+
+  children.forEach((child, i) => {
+    const childCenter = child.offsetLeft + child.clientWidth / 2
+    const dist = Math.abs(trackCenter - childCenter)
+    if (dist < closestDist) {
+      closestDist = dist
+      closestIndex = i
+    }
+  })
+
+  activeIndex.value = closestIndex
+}
+
+const scrollToIndex = (index) => {
+  if (!carouselTrack.value) return
+  const children = Array.from(carouselTrack.value.children)
+  if (children[index]) {
+    children[index].scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest'
+    })
+    activeIndex.value = index
   }
 }
+
+const scrollPrev = () => {
+  if (activeIndex.value > 0) {
+    scrollToIndex(activeIndex.value - 1)
+  }
+}
+
+const scrollNext = () => {
+  if (activeIndex.value < mediaItems.value.length - 1) {
+    scrollToIndex(activeIndex.value + 1)
+  }
+}
+
+const openLightbox = (item) => {
+  lightboxImg.value = item
+}
+
+// Make sure video plays reliably on mobile
+const onVideoLoaded = (idx) => {
+  const el = videoElements.value[idx]
+  if (el) {
+    el.muted = true
+    el.play().catch(() => {
+      // Browser prevented autoplay before user interaction
+    })
+  }
+}
+
+onMounted(() => {
+  nextTick(() => {
+    Object.values(videoElements.value).forEach((el) => {
+      if (el) {
+        el.muted = true
+        el.play().catch(() => {})
+      }
+    })
+  })
+})
 </script>
 
 <style scoped>
 .gallery-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   margin-top: 6px;
+  width: 100%;
 }
 
 .gallery-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
+  padding: 0 4px;
+}
+
+.gallery-title-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .gallery-title {
@@ -175,107 +285,136 @@ const openLightbox = (img) => {
   color: var(--text-muted, #5b5f6d);
 }
 
-.video-switcher {
-  display: inline-flex;
-  background: #191b1f;
-  padding: 3px;
-  border-radius: 999px;
-  box-shadow: inset 2px 2px 5px #111215, inset -2px -2px 5px #272930;
-  gap: 3px;
-}
-
-.vid-tab-btn {
-  background: transparent;
-  border: none;
-  color: #7d8291;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+.media-counter {
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.72rem;
   font-weight: 600;
-  padding: 4px 10px;
+  color: #5bb2ff;
+  background: #191b1f;
+  padding: 2px 8px;
   border-radius: 999px;
+  box-shadow: inset 1px 1px 3px #111215, inset -1px -1px 3px #272930;
+}
+
+.gallery-nav-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.nav-arrow-btn {
+  background: var(--bg-color, #1e1f23);
+  border: none;
+  color: var(--text-secondary, #8c909e);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  box-shadow: 3px 3px 8px var(--shadow-dark, #121316), -3px -3px 8px var(--shadow-light, #2c2e35);
   transition: all 0.2s ease;
 }
 
-.vid-tab-btn:hover {
+.nav-arrow-btn:hover:not(:disabled) {
   color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 4px 4px 10px var(--shadow-dark, #121316), -4px -4px 10px var(--shadow-light, #2c2e35);
 }
 
-.vid-tab-btn.active {
-  background: #25272e;
-  color: #ffffff;
-  box-shadow: 2px 2px 5px #111215, -2px -2px 5px #2c2e35;
+.nav-arrow-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Video Box */
-.media-video-box {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #17181c;
-  border-radius: 20px;
-  box-shadow: inset 5px 5px 12px var(--shadow-dark, #121316), inset -5px -5px 12px var(--shadow-light, #2c2e35);
+.nav-arrow-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Horizontal Scroll Track */
+.media-carousel-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 6px 2px 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #2e313a transparent;
+}
+
+.media-carousel-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.media-carousel-track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.media-carousel-track::-webkit-scrollbar-thumb {
+  background: #2b2e37;
+  border-radius: 999px;
+}
+
+/* Individual Carousel Item Card */
+.media-carousel-item {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  height: 360px;
+  background: #18191e;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 6px 6px 18px var(--shadow-dark, #121316), -6px -6px 18px var(--shadow-light, #2c2e35);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.media-carousel-item.is-image-item {
+  cursor: pointer;
+}
+
+.media-carousel-item:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+}
+
+/* Video Wrapper & Player */
+.media-video-wrapper {
+  flex: 1;
+  position: relative;
+  background: #0d0e11;
+  display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  transition: border-color 0.25s ease;
 }
 
-.media-video-box.has-video {
-  box-shadow: 8px 8px 20px var(--shadow-dark, #121316), -8px -8px 20px var(--shadow-light, #2c2e35);
-}
-
-.media-video-player {
-  width: 100%;
+.media-natural-video {
   height: 100%;
-  object-fit: cover;
-  border-radius: 20px;
+  width: auto;
+  max-width: 82vw;
+  object-fit: contain;
   display: block;
   background: #000;
 }
 
-.video-pulse-ring {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #24262c;
-  box-shadow: 4px 4px 10px var(--shadow-dark, #121316), -4px -4px 10px var(--shadow-light, #2c2e35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #adb2c2;
-  margin-bottom: 12px;
-  transition: all 0.25s ease;
-}
-
-.media-video-box:hover .video-pulse-ring {
-  transform: scale(1.1);
-  color: #ffffff;
-  box-shadow: 6px 6px 14px #0f1013, -6px -6px 14px #2f323a, 0 0 16px rgba(255, 255, 255, 0.1);
-}
-
-.video-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #8c909e;
-  letter-spacing: 0.3px;
-}
-
-.video-badge-autoplay {
+.video-top-badge {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  right: 12px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 600;
   color: #5bb2ff;
-  background: rgba(20, 21, 26, 0.85);
+  background: rgba(18, 19, 24, 0.85);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -285,7 +424,7 @@ const openLightbox = (img) => {
   z-index: 5;
 }
 
-.video-badge-autoplay .dot {
+.video-top-badge .dot {
   width: 5px;
   height: 5px;
   background: #5bb2ff;
@@ -298,96 +437,88 @@ const openLightbox = (img) => {
   50% { opacity: 0.3; }
 }
 
-/* Image Grid */
-.media-img-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.media-img-box {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  background: #191a1e;
-  border-radius: 16px;
-  box-shadow: inset 3px 3px 6px var(--shadow-dark, #121316), inset -3px -3px 6px var(--shadow-light, #2c2e35);
+/* Image Wrapper & Natural View */
+.media-img-wrapper {
+  flex: 1;
+  position: relative;
+  background: #121316;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  transition: all 0.25s ease;
-  cursor: pointer;
 }
 
-.media-img-box.has-img {
-  box-shadow: 6px 6px 16px var(--shadow-dark, #121316), -6px -6px 16px var(--shadow-light, #2c2e35);
-}
-
-.media-img-box:hover {
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-3px);
-}
-
-.media-real-img {
-  width: 100%;
+.media-natural-img {
   height: 100%;
-  object-fit: cover;
+  width: auto;
+  max-width: 82vw;
+  object-fit: contain;
   display: block;
   transition: transform 0.35s ease;
 }
 
-.media-img-box:hover .media-real-img {
-  transform: scale(1.06);
+.media-carousel-item:hover .media-natural-img {
+  transform: scale(1.02);
 }
 
-.media-img-overlay {
+.img-zoom-hint {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 10px;
-  background: linear-gradient(180deg, transparent 0%, rgba(18, 19, 23, 0.85) 100%);
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(18, 19, 24, 0.8);
+  backdrop-filter: blur(6px);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  color: #adb0be;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   pointer-events: none;
+  opacity: 0.8;
+  transition: all 0.2s ease;
 }
 
-.media-img-pill {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.72rem;
+.media-carousel-item:hover .img-zoom-hint {
+  opacity: 1;
+  color: #ffffff;
+}
+
+.img-zoom-hint svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Caption Footer of Item */
+.media-item-caption {
+  padding: 10px 14px;
+  background: #17181c;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.media-caption-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #797d8c;
+  background: #121315;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.media-caption-text {
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #e0e3ed;
-  background: rgba(25, 26, 32, 0.85);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: 3px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #d1d5e3;
+  letter-spacing: 0.2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.media-img-box svg {
-  width: 26px;
-  height: 26px;
-  color: #5e6270;
-  transition: color 0.2s ease;
-}
-
-.media-img-box:hover svg {
-  color: #adb1c2;
-}
-
-.media-img-label {
-  font-size: 0.74rem;
-  font-weight: 500;
-  color: #6c707f;
-  margin-top: 6px;
 }
 
 /* Lightbox Modal */
@@ -452,8 +583,8 @@ const openLightbox = (img) => {
 }
 
 @media (max-width: 540px) {
-  .media-img-grid {
-    grid-template-columns: 1fr;
+  .media-carousel-item {
+    height: 310px;
   }
 }
 </style>
