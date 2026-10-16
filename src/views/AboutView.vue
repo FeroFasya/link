@@ -31,9 +31,14 @@
           <span>Setitik Debu Galaxy</span>
         </div>
         <h1 class="about-title">tentang ku</h1>
-        <p class="about-description">
-          Fero cuma manusia biasa kok, cuma setitik kecil dalam alam semesta yang luas ini, meski kecil tapi fero punya mimpi, keliling dunia dan punya target menginjakan kaki ke kota kota impian dia, tokyo, newyork, shanghai, bahkan riyadh. fero menganggap semua hal berharga, soo... terimakasih sudah menjadi bagian dari hidup setitik debu galaxy ini
-        </p>
+        <div class="about-description">
+          <p>
+            Fero cuma manusia biasa kok, cuma setitik debu kecil di tengah alam semesta yang luas ini. Meski kecil, Fero punya mimpi besar: keliling dunia dan menginjakkan kaki di kota-kota impiannya seperti Tokyo, New York, Shanghai, hingga Riyadh.
+          </p>
+          <p>
+            Bagiku... hidup ini cuma sekali sebelum semuanya kembali menjadi <em>void</em>, karena itu aku menganggap setiap orang yang aku temui itu berharga. Soo... makasih sudah mampir dan menjadi bagian dari perjalanan hidupku, si setitik debu galaksi ini.
+          </p>
+        </div>
       </header>
 
       <!-- Dream Cities Tags -->
@@ -218,6 +223,9 @@ import GlobalFooter from '@/components/GlobalFooter.vue'
   font-size: 0.96rem;
   line-height: 1.75;
   color: #b8bccb;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .about-tags {
