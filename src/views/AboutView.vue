@@ -33,7 +33,7 @@
         <h1 class="about-title">tentang ku</h1>
         <div class="about-description">
           <p>
-            Fero cuma manusia biasa kok, cuma setitik debu kecil di tengah alam semesta yang luas ini. Meski kecil, Fero punya mimpi besar: keliling dunia dan menginjakkan kaki di kota-kota impiannya seperti Tokyo, New York, Shanghai, hingga Riyadh.
+            Fero cuma orang biasa kok, cuma setitik debu kecil di tengah alam semesta yang luas ini. Meski kecil, Fero punya mimpi untuk keliling dunia dan menginjakkan kaki di kota-kota impiannya seperti Tokyo, New York, Shanghai, hingga Riyadh.
           </p>
           <p>
             Bagiku... hidup ini cuma sekali sebelum semuanya kembali menjadi <em>void</em>, karena itu aku menganggap setiap orang yang aku temui itu berharga. Soo... makasih sudah mampir dan menjadi bagian dari perjalanan hidupku, si setitik debu galaksi ini.
