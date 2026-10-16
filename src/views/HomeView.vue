@@ -6,11 +6,10 @@
 
       <!-- Links Container -->
       <section class="links-container">
-        <!-- 1. Web Karya (Monochrome Star Watermark) -->
         <!-- 1. Tentang Ku (Monochrome Star Watermark) -->
         <NeuLinkButton
           title="tentang ku"
-          href="https://ferofasya.github.io/Portogamegweh/"
+          to="/tentang-ku"
           variant="star"
         />
 

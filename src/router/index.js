@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import TimeMachineView from '@/views/TimeMachineView.vue'
 import ProjectDetailView from '@/views/ProjectDetailView.vue'
+import AboutView from '@/views/AboutView.vue'
 
 const routes = [
   {
@@ -9,6 +10,12 @@ const routes = [
     name: 'Home',
     component: HomeView,
     meta: { title: 'Fero Fasya - Links' }
+  },
+  {
+    path: '/tentang-ku',
+    name: 'About',
+    component: AboutView,
+    meta: { title: 'Tentang Ku | Fero Fasya' }
   },
   {
     path: '/mesin-waktu',
