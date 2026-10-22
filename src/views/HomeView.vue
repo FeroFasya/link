@@ -16,7 +16,7 @@
         <!-- 2. Katalog Bisnis (Google Developers Laser Chevrons < >) -->
         <NeuLinkButton
           title="katalog bisnis"
-          href="#"
+          href="https://katalog-bisnis.pages.dev/"
           variant="laser"
         />
 
